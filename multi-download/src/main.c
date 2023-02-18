@@ -54,7 +54,7 @@ static const char *urls[] = {
   "https://www.un.org",
 };
 
-#define INDEX 10
+#define SIZE 10
 
 #define NUM_URLS sizeof(urls)/sizeof(char *)
 
@@ -78,50 +78,56 @@ static void add_transfer(CURLM *cm, int i, int *left)
 
 int main(void)
 {
-  CURLM *cm;
-  CURLMsg *msg;
-  unsigned int transfers = 0;
-  int msgs_left = -1;
-  int left = 0;
+  pthread_t thread1;
+  void *result;
 
-  curl_global_init(CURL_GLOBAL_ALL);
-  cm = curl_multi_init();
+  int rc = pthread_create(&thread1, NULL, thread_curl, NULL);
 
-  /* Limit the amount of simultaneous connections curl should allow: */
-  curl_multi_setopt(cm, CURLMOPT_MAXCONNECTS, (long)INDEX);
+  pthread_join(thread2, &result);
 
-  for(transfers = 0; transfers < INDEX && transfers < NUM_URLS;
-      transfers++)
-    add_transfer(cm, transfers, &left);
+  /*
+     unsigned int transfers = 0;
+     int msgs_left = -1;
+     int left = 0;
 
-  do {
-    int still_alive = 1;
-    curl_multi_perform(cm, &still_alive);
+     curl_global_init(CURL_GLOBAL_ALL);
+     cm = curl_multi_init();
 
-    while((msg = curl_multi_info_read(cm, &msgs_left))) {
-      if(msg->msg == CURLMSG_DONE) {
-        char *url;
-        CURL *e = msg->easy_handle;
-        curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &url);
-        fprintf(stderr, "R: %d - %s <%s>\n",
-            msg->data.result, curl_easy_strerror(msg->data.result), url);
-        curl_multi_remove_handle(cm, e);
-        curl_easy_cleanup(e);
-        left--;
-      }
-      else {
-        fprintf(stderr, "E: CURLMsg (%d)\n", msg->msg);
-      }
-      if(transfers < NUM_URLS)
-        add_transfer(cm, transfers++, &left);
-    }
-    if(left)
-      curl_multi_wait(cm, NULL, 0, 1000, NULL);
+     curl_multi_setopt(cm, CURLMOPT_MAXCONNECTS, (long)SIZE);
 
-  } while(left);
+     for(transfers = 0; transfers < SIZE && transfers < NUM_URLS;
+     transfers++)
+     add_transfer(cm, transfers, &left);
 
-  curl_multi_cleanup(cm);
-  curl_global_cleanup();
+     do {
+     int still_alive = 1;
+     curl_multi_perform(cm, &still_alive);
 
-  return EXIT_SUCCESS;
+     while((msg = curl_multi_info_read(cm, &msgs_left))) {
+     if(msg->msg == CURLMSG_DONE) {
+     char *url;
+     CURL *e = msg->easy_handle;
+     curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &url);
+     fprintf(stderr, "R: %d - %s <%s>\n",
+     msg->data.result, curl_easy_strerror(msg->data.result), url);
+     curl_multi_remove_handle(cm, e);
+     curl_easy_cleanup(e);
+     left--;
+     }
+     else {
+     fprintf(stderr, "E: CURLMsg (%d)\n", msg->msg);
+     }
+     if(transfers < NUM_URLS)
+     add_transfer(cm, transfers++, &left);
+     }
+     if(left)
+     curl_multi_wait(cm, NULL, 0, 1000, NULL);
+
+     } while(left);
+
+     curl_multi_cleanup(cm);
+     curl_global_cleanup();
+     */
+
+  return 0;
 }
