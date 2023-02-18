@@ -1,38 +1,8 @@
-/***************************************************************************
-*                                  _   _ ____  _
-*  Project                     ___| | | |  _ \| |
-*                             / __| | | | |_) | |
-*                            | (__| |_| |  _ <| |___
-*                             \___|\___/|_| \_\_____|
-*
-* Copyright (C) Daniel Stenberg, <daniel@haxx.se>, et al.
-*
-* This software is licensed as described in the file COPYING, which
-* you should have received as part of this distribution. The terms
-* are also available at https://curl.se/docs/copyright.html.
-*
-* You may opt to use, copy, modify, merge, publish, distribute and/or sell
-* copies of the Software, and permit persons to whom the Software is
-* furnished to do so, under the terms of the COPYING file.
-*
-* This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
-* KIND, either express or implied.
-*
-* SPDX-License-Identifier: curl
-*
-***************************************************************************/
-/* <DESC>
- *  Download many files in parallel, in the same thread.
- * </DESC>
- * */
-
+#include <curl/curl.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef WIN32
 #include <unistd.h>
-#endif
-#include <curl/curl.h>
 
 static const char *urls[] = {
   "https://www.microsoft.com",
@@ -84,7 +54,8 @@ static const char *urls[] = {
   "https://www.un.org",
 };
 
-#define MAX_PARALLEL 10 /* number of simultaneous transfers */
+#define INDEX 10
+
 #define NUM_URLS sizeof(urls)/sizeof(char *)
 
 static size_t write_cb(char *data, size_t n, size_t l, void *userp)
@@ -117,9 +88,9 @@ int main(void)
   cm = curl_multi_init();
 
   /* Limit the amount of simultaneous connections curl should allow: */
-  curl_multi_setopt(cm, CURLMOPT_MAXCONNECTS, (long)MAX_PARALLEL);
+  curl_multi_setopt(cm, CURLMOPT_MAXCONNECTS, (long)INDEX);
 
-  for(transfers = 0; transfers < MAX_PARALLEL && transfers < NUM_URLS;
+  for(transfers = 0; transfers < INDEX && transfers < NUM_URLS;
       transfers++)
     add_transfer(cm, transfers, &left);
 
