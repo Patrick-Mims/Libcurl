@@ -1,5 +1,6 @@
 #include <curl/curl.h>
 #include <errno.h>
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -83,14 +84,15 @@ int main(void)
   pthread_t thread1;
 
   void *result;
+  int rc;
 
-  int rc = pthread_create(&thread1, NULL, thread_curl, NULL);
+  rc = pthread_create(&thread1, NULL, thread_curl, NULL);
 
 /* The thread that calls pthread_create()
    continues execution with the next
    statement that follows the call. */
 
-  pthread_join(thread2, &result);
+  pthread_join(thread1, &result);
 
   /*
      unsigned int transfers = 0;
