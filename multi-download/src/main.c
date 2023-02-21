@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "struct.h"
+
 static const char *urls[] = {
   "https://www.microsoft.com",
   "https://opensource.org",
@@ -79,9 +81,14 @@ static void add_transfer(CURLM *cm, int i, int *left)
 int main(void)
 {
   pthread_t thread1;
+
   void *result;
 
   int rc = pthread_create(&thread1, NULL, thread_curl, NULL);
+
+/* The thread that calls pthread_create()
+   continues execution with the next
+   statement that follows the call. */
 
   pthread_join(thread2, &result);
 
