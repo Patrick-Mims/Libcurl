@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "struct.h"
+#include "thread.h"
 
 static const char *urls[] = {
   "https://www.microsoft.com",
@@ -86,7 +87,7 @@ int main(void)
   void *result;
   int rc;
 
-  rc = pthread_create(&thread1, NULL, thread_curl, NULL);
+  rc = pthread_create(&thread1, NULL, thread_curl, "Women");
 
 /* The thread that calls pthread_create()
    continues execution with the next

@@ -1,3 +1,5 @@
+#include <curl/curl.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,5 +11,7 @@
 
 static void *thread_curl(void *arg)
 {
+  char *s = (char *)arg;
 
+  return NULL;
 }
