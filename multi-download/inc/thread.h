@@ -1,5 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef THREAD_H
+#define THREAD_H
 
-static void *thread_curl(void *);
+void *thread_curl(void *);
+pthread_t thread_id();
+
+#endif
