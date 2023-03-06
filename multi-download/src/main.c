@@ -7,6 +7,7 @@
 
 #include "struct.h"
 #include "thread.h"
+#include "ftp.h"
 
 /*
 static const char *urls[] = {
@@ -100,7 +101,7 @@ curl_t allocate_memory()
 int main(void)
 {
   pthread_t id;
-  pthread_t thread1;
+  pthread_t thread1, thread2;
 
   void *result;
 
@@ -116,7 +117,7 @@ int main(void)
   /* Retreive thread id from utility function */
   id = thread_id();
 
-  printf("[pthread_self main] %ld\n", pthread_self());
+  printf("[thread 1] %ld\n", pthread_self());
   printf("[thread_id main] %ld\n", (long)id);
 
   pj = pthread_join(thread1, &result);
@@ -126,6 +127,18 @@ int main(void)
     printf("pthread_detach(thread1)\n");
     exit(EXIT_FAILURE);
   }
+
+  if((pc = pthread_create(&thread2, NULL, thread_sftp, &url)) != 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  id = thread_id();
+
+  printf("[thread 2] %ld\n", pthread_self());
+  printf("[thread_id main] %ld\n", (long)id);
+
+  pj = pthread_join(thread1, &result);
 
   /*
      unsigned int transfers = 0;

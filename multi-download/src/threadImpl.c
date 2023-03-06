@@ -98,6 +98,11 @@ void *thread_curl(void *arg)
   return NULL;
 }
 
+void *thread_sftp(void *arg)
+{
+  struct ftp_t *ftp = (struct ftp_t *)arg;
+}
+
 pthread_t thread_id()
 {
   pthread_t id;
