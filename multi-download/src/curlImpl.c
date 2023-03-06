@@ -3,3 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+void greetings()
+{
+
+  printf("Hello from curlImpl.c\n");
+}
+
+
