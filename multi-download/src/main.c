@@ -8,6 +8,7 @@
 #include "struct.h"
 #include "thread.h"
 
+/*
 static const char *urls[] = {
   "https://www.microsoft.com",
   "https://opensource.org",
@@ -57,14 +58,16 @@ static const char *urls[] = {
   "https://apache.org",
   "https://www.un.org",
 };
+*/
 
+/*
 #define SIZE 10
 
 #define NUM_URLS sizeof(urls)/sizeof(char *)
 
 static size_t write_cb(char *data, size_t n, size_t l, void *userp)
 {
-  /* take care of the data here, ignored in this example */
+  // take care of the data here, ignored in this example
   (void)data;
   (void)userp;
   return n*l;
@@ -79,21 +82,50 @@ static void add_transfer(CURLM *cm, int i, int *left)
   curl_multi_add_handle(cm, eh);
   (*left)++;
 }
+*/
+
+curl_t allocate_memory()
+{
+  curl_t mem;
+
+  if((mem = malloc(sizeof(curl_t))) == NULL)
+  {
+    printf("coult not allocate memory");
+    exit(EXIT_FAILURE);
+  }
+
+  return mem;
+}
 
 int main(void)
 {
+  pthread_t id;
   pthread_t thread1;
 
   void *result;
-  int rc;
 
-  rc = pthread_create(&thread1, NULL, thread_curl, "Women");
+  int pc, pj;
 
-/* The thread that calls pthread_create()
-   continues execution with the next
-   statement that follows the call. */
+  curl_t url = allocate_memory();
 
-  pthread_join(thread1, &result);
+  if((pc = pthread_create(&thread1, NULL, thread_curl, &url)) != 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  /* Retreive thread id from utility function */
+  id = thread_id();
+
+  printf("[pthread_self main] %ld\n", pthread_self());
+  printf("[thread_id main] %ld\n", (long)id);
+
+  pj = pthread_join(thread1, &result);
+
+  if(pthread_detach(thread1) != 0)
+  {
+    printf("pthread_detach(thread1)\n");
+    exit(EXIT_FAILURE);
+  }
 
   /*
      unsigned int transfers = 0;
