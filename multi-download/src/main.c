@@ -5,61 +5,10 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "sftp.h"
 #include "struct.h"
 #include "thread.h"
-#include "ftp.h"
 
-/*
-static const char *urls[] = {
-  "https://www.microsoft.com",
-  "https://opensource.org",
-  "https://www.google.com",
-  "https://www.yahoo.com",
-  "https://www.ibm.com",
-  "https://www.mysql.com",
-  "https://www.oracle.com",
-  "https://www.ripe.net",
-  "https://www.iana.org",
-  "https://www.amazon.com",
-  "https://www.netcraft.com",
-  "https://www.heise.de",
-  "https://www.chip.de",
-  "https://www.ca.com",
-  "https://www.cnet.com",
-  "https://www.mozilla.org",
-  "https://www.cnn.com",
-  "https://www.wikipedia.org",
-  "https://www.dell.com",
-  "https://www.hp.com",
-  "https://www.cert.org",
-  "https://www.mit.edu",
-  "https://www.nist.gov",
-  "https://www.ebay.com",
-  "https://www.playstation.com",
-  "https://www.uefa.com",
-  "https://www.ieee.org",
-  "https://www.apple.com",
-  "https://www.symantec.com",
-  "https://www.zdnet.com",
-  "https://www.fujitsu.com/global/",
-  "https://www.supermicro.com",
-  "https://www.hotmail.com",
-  "https://www.ietf.org",
-  "https://www.bbc.co.uk",
-  "https://news.google.com",
-  "https://www.foxnews.com",
-  "https://www.msn.com",
-  "https://www.wired.com",
-  "https://www.sky.com",
-  "https://www.usatoday.com",
-  "https://www.cbs.com",
-  "https://www.nbc.com/",
-  "https://slashdot.org",
-  "https://www.informationweek.com",
-  "https://apache.org",
-  "https://www.un.org",
-};
-*/
 
 /*
 #define SIZE 10
@@ -109,6 +58,8 @@ int main(void)
 
   curl_t url = allocate_memory();
 
+  curl_global_init(CURL_GLOBAL_DEFAULT);
+
   if((pc = pthread_create(&thread1, NULL, thread_curl, &url)) != 0)
   {
     exit(EXIT_FAILURE);
@@ -122,11 +73,13 @@ int main(void)
 
   pj = pthread_join(thread1, &result);
 
+  /*
   if(pthread_detach(thread1) != 0)
   {
     printf("pthread_detach(thread1)\n");
     exit(EXIT_FAILURE);
   }
+  */
 
   if((pc = pthread_create(&thread2, NULL, thread_sftp, &url)) != 0)
   {
